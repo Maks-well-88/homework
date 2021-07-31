@@ -1,8 +1,7 @@
 class Wagon
-	public # публичный метод, так как используется за пределами класса
-	attr_reader :type_wagon
+	attr_reader :type
 
-	def initialize(type_wagon)
-		@type_wagon = type_wagon
+	def initialize(type)
+		@type = type
 	end
 end

@@ -1,5 +1,5 @@
 class CargoWagon < Wagon
-	WAGON_TYPE = 'cargo'
+	WAGON_TYPE = :cargo
 	
 	def initialize
 		super(WAGON_TYPE)

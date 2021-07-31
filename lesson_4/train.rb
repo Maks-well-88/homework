@@ -19,11 +19,11 @@ class Train
 	end
 
 	def add_wagon(wagon)
-		@wagons << wagon
+		wagons << wagon
 	end
 	
 	def delete_wagon(wagon)
-		@wagons.delete(wagon)
+		wagons.delete(wagon)
 	end
 
 	def move_fwd
