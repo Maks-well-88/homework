@@ -320,7 +320,7 @@ class Interface
 
 	def move_forward
 		if trains[@drive_train].current_point.name != @routes[@drive_train].list.last.name
-			@trains[@drive_train].move_fwd 
+			trains[@drive_train].move_fwd
 			puts "\nПоезд № #{trains[@drive_train].id} прибыл на станцию #{trains[@drive_train].current_point.name}."
 			puts "Следующая станция #{trains[@drive_train].next_station.name}.\n\n" if trains[@drive_train].current_point.name != @routes[@drive_train].list.last.name
 		else
@@ -332,7 +332,7 @@ class Interface
 		if trains[@drive_train].current_point.name != @routes[@drive_train].list.first.name
 			@trains[@drive_train].move_back
 			puts "\nПоезд № #{trains[@drive_train].id} прибыл на станцию #{trains[@drive_train].current_point.name}.\n\n"
-			puts "Следующая станция #{trains[@drive_train].next_station.name}.\n\n" if trains[@drive_train].current_point.name != @routes[@drive_train].list.first.name && trains[@drive_train].current_point.name != @routes[@drive_train].list.last.name 
+			puts "Следующая станция #{trains[@drive_train].previous_station.name}.\n\n" if trains[@drive_train].current_point.name != @routes[@drive_train].list.first.name && trains[@drive_train].current_point.name != @routes[@drive_train].list.last.name 
 		else
 			puts "\nПоезд прибыл на конечную станцию и дальше не идет!\n\n"
 		end
@@ -369,15 +369,14 @@ class Interface
 
 	def create_route
 		puts "Чтобы создать маршрут выберите доступные станции:\n\n"
-		@stations.each_with_index { |station, index| puts " - cтанция #{station.name}, индекс - #{index}." }
+		stations.each_with_index { |station, index| puts " - cтанция #{station.name}, индекс - #{index}." }
 		print "\nВведите индекс станции для первой точки маршрута: "
 		first_index = gets.chomp.to_i
 		print "Введите индекс станции для второй точки маршрута: "
-		last_index = gets.chomp.to_i
-		route = Route.new(@stations[first_index], @stations[last_index])			
-		routes << route
+		last_index = gets.chomp.to_i	
+		routes.push(Route.new(stations[first_index], stations[last_index]))
 		system 'clear'
-		puts "Маршрут #{@stations[first_index].name}-#{@stations[last_index].name} успешно создан!\n\n"
+		puts "Маршрут #{stations[first_index].name}-#{stations[last_index].name} успешно создан!\n\n"
 	end
 
 	def create_station
@@ -392,10 +391,9 @@ class Interface
 	def create_passenger_train
 		print 'Введите номер поезда: '
 		id = gets.chomp
-		train = PassengerTrain.new(id)
-		trains << train
+		trains.push(PassengerTrain.new(id))
 		system 'clear'
-		puts "Поезд типа #{train.type} успешно создан!\n\n"
+		puts "Новый поезд успешно создан!\n\n"
 		sleep 1.5
 		system 'clear'
 	end
@@ -403,10 +401,9 @@ class Interface
 	def create_cargo_train
 		print 'Введите номер поезда: '
 		id = gets.chomp
-		train = CargoTrain.new(id)
-		trains << train
+		trains.push(CargoTrain.new(id))
 		system 'clear'
-		puts "Поезд типа #{train.type} успешно создан!\n\n"
+		puts "Новый поезд успешно создан!\n\n"
 		sleep 1.5
 		system 'clear'
 	end

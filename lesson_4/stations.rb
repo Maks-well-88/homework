@@ -17,12 +17,12 @@ class Station
 
 	def train_list(station)
 		puts "На станции #{station.name} находятся:"
-		@trains_list.each { |train| puts "- Поезд № #{train.id}, тип: #{train.type}, количество вагонов: #{train.wagons.size}."}
+		trains_list.each { |train| puts "- Поезд № #{train.id}, тип: #{train.type}, количество вагонов: #{train.wagons.size}."}
 	end
 
-	def train_type_list
+	def train_type_list(station)
 		passenger, cargo = 0, 0
-		@trains_list.each { |train| train.type == :passenger ? passenger += 1 : cargo += 1}
-		puts "На станции #{self.name} находится #{passenger} пассажирских поездов, #{cargo} грузовых поездов."
+		trains_list.each { |train| train.type == :passenger ? passenger += 1 : cargo += 1}
+		puts "На станции #{station.name} находится #{passenger} пассажирских поездов, #{cargo} грузовых поездов."
 	end
 end
