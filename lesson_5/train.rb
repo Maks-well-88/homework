@@ -6,15 +6,16 @@ class Train
 	include InstanceCounter
 
 	attr_accessor :speed, :wagons, :current_point, :next_station, :previous_station
-	attr_reader :id, :type
+	attr_reader :number, :type
 
-	@@all_trains = []
-	def self.find(id)
-		@@all_trains.find { |train| puts "\nПоезд с №-#{train.id} существует в базе!\n\n" if train.id == id }
+	@@trains = []
+
+	def self.find(number)
+		@@trains.find { |train| puts train if train.number == number }
 	end
 
-	def initialize(id = 'AB12C88-21', type)
-		@id = id
+	def initialize(number = 'AB12C88-21', type)
+		@number = number
 		@type = type
 		@wagons = []
 		@speed = 0
@@ -22,21 +23,9 @@ class Train
 		count_copies
 	end
 
-	def stop_train
-		self.speed  = 0
-	end
-
 	def take_route(route)
 		@route = route
 		self.current_point = route.list.first
-	end
-
-	def add_wagon(wagon)
-		wagons << wagon
-	end
-	
-	def delete_wagon(wagon)
-		wagons.delete(wagon)
 	end
 
 	def move_fwd
@@ -55,6 +44,6 @@ class Train
 
 	private
 	def self.save_trains(train)
-		@@all_trains << train
+		@@trains << train
 	end
 end
