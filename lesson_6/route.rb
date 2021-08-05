@@ -9,8 +9,8 @@ class Route
 		@first_station = first_station
 		@end_station = end_station
 		@list = [first_station, end_station]
+		validate!		
 		count_copies
-		validate!
 	end
 
 	def valid?
@@ -33,8 +33,9 @@ class Route
 		list.each {|i| puts i }
 	end
 
-	private
 	def validate!
-		raise 'Не корректно построен маршрут! Попробуйте еще раз!' if first_station.nil? || end_station.nil?
+		errors = []
+		errors << 'Не корректно построен маршрут! Попробуйте еще раз.' if first_station.nil? || end_station.nil?
+		raise errors.join(' ') unless errors.empty?
 	end
 end

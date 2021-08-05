@@ -10,129 +10,106 @@ class Interface
 	end
 
 	def menu
+		menu = [
+			{action_block: "\n* УПРАВЛЕНИЯ СТАНЦИЯМИ *"},
+			{action_title: "Создать новую ж/д станцию", index: 1, action: :create_station},
+			{action_title: "Принять поезд на ж/д станцию", index: 2, action: :add_train_to_station},
+			{action_title: "Отправить поезд с ж/д станции", index: 3, action: :departure_train_from_station},
+			{action_title: "Показать все поезда на всех станциях", index: 4, action: :train_list_on_the_stations},
+			{action_title: "Показать типы поездов на всех станциях", index: 5, action: :train_type_list_on_the_stations},
+			{action_block: "* УПРАВЛЕНИЕ ПОЕЗДАМИ *"},
+			{action_title: "Создать новый поезд", index: 6, action: :create_train},						
+			{action_title: "Управлять вагонами поезда", index: 7, action: :train_carriage_manage},
+			{action_title: "Задать скорость поезду", index: 8, action: :train_change_speed},
+			{action_title: "Остановить поезд", index: 9, action: :train_stop},
+			{action_title: "Добавить маршрут к поезду", index: 10, action: :assign_route_to_train},
+			{action_title: "Перемещать поезд между станциями", index: 11, action: :drive_the_train_betwin_stations},
+			{action_title: "Показать информауию о всех поездах", index: 12, action: :trains_info},
+			{action_block: "* УПРАВЛЕНИЕ МАРШРУТАМИ *"},			
+			{action_title: "Создать новый маршрут", index: 13, action: :create_new_route},
+			{action_title: "Редактировать маршрут", index: 14, action: :change_intermediate_stations_fron_route},
+			{action_title: "Показать список станций на маршруте", index: 15, action: :show_route_stations},	
+			{action_title: "ВЫЙТИ ИЗ МЕНЮ", index: 0}	
+		]
+		
 		loop do
-			puts "\nДля УПРАВЛЕНИЯ СТАНЦИЯМИ введите номер команды."
-			puts "Создать новую ж/д станцию - (1)"
-			puts "Принять поезд на ж/д станцию - (2)"
-			puts "Отправить поезд с ж/д станции - (3)"
-			puts "Показать все поезда на всех станциях - (4)"
-			puts "Показать типы поездов на всех станциях - (5)"
-			puts "\n"# ===========================================================================
-			puts "Для УПРАВЛЕНИЕ ПОЕЗДАМИ введите номер команды."
-			puts "Создать новый поезд - (6)"
-			puts "Управлять вагонами поезда - (7)"
-			puts "Задать скорость поезду - (8)"
-			puts "Остановить поезд - (9)"
-			puts "Добавить маршрут к поезду - (10)"
-			puts "Перемещать поезд между станциями - (11)"
-			puts "Показать информауию о всех поездах - (12)"
-			puts "\n"# ===========================================================================
-			puts "Для УПРАВЛЕНИЕ МАРШРУТАМИ введите номер команды."
-			puts "Создать новый маршрут - (13)"
-			puts "Редактирование маршрута - (14)"
-			puts "Показать список станций на маршруте - (15)"
-			puts "\n"# ===========================================================================
-			puts "ВЫЙТИ ИЗ МЕНЮ - (000)"
-			puts "\n"# ===========================================================================
+			menu.each do |i|
+				if i[:action_block]
+					puts i[:action_block]			
+				else
+					puts "#{i[:action_title]} - (#{i[:index]})"
+				end
+			end
 			print "\nВведите номер команды: "
 			command = gets.chomp.to_i
-			case command
-			when 1 then create_new_station
-			when 2 then add_train_to_station
-			when 3 then departure_train_from_station
-			when 4 then train_list_on_the_stations
-			when 5 then train_type_list_on_the_stations
-			when 6 then create_train
-			when 7 then train_carriage_manage
-			when 8 then train_change_speed
-			when 9 then train_stop
-			when 10 then assign_route_to_train
-			when 11 then drive_the_train_betwin_stations
-			when 12 then trains_info
-			when 13 then create_new_route
-			when 14 then change_intermediate_stations_fron_route
-			when 15 then show_route_stations
-			when 000 then break
+			if command != 0
+				action = menu.detect { |i| i[:index] == command }
+				send(action[:action])
+			else
+				break
 			end
 		end
-		system 'clear'	
+		system 'clear'
 	end
 
 	# === УПРАВЛЕНИЕ СТАНЦИЯМИ ===
 
-	def create_new_station
+	def create_station
 		system 'clear'
 		loop do
-			create_station
-			print "\nПродолжить создание станций ('yes' / 'no')? "
-			next_step = gets.chomp
-			break if next_step == 'no'
+			print "Введите название станции: "
+			station = Station.new(gets.chomp)
+			stations << station
 			system 'clear'
+			puts "Станция '#{station.name}' успешно создана!"
+			sleep 2
+			break if station
 		rescue Exception => e
 			system 'clear'
-			puts "#{e.message}\n\n"
+			puts "#{e.message}\n"
 		end
 		system 'clear'
 	end
 	
 	def add_train_to_station
-		system 'clear'
 		loop do
-			puts "Выберите из списка станцию, на которую необходимо принять поезд:\n\n"
-			stations.each_with_index { |station, index| puts " - cтанция #{station.name}, индекс - #{index}."}
-			print "\nВведите индекс станции, а если их нет, то введите '999', чтобы выйти: "
-			arrival_station_index = gets.chomp.to_i
-			break if arrival_station_index == 999
 			system 'clear'
-			puts "Выберите из списка номер поезда, который будет приниматься на станцию:\n\n"
-			trains.each_with_index { |train, index| puts " - поезд № #{train.number}, тип #{train.type}, количество вагонов #{train.wagons.size}, индекс - #{index}."}
-			print "\nВведите индекс поезда, а если его нет, то введите '999', чтобы выйти: "
+			show_accessible_stations
+			print stations.empty? ? "Доступных станций нет. Введите '999', чтобы выйти: " : "\nВведите индекс станции или '999', чтобы выйти : "
+			arrival_station_index = gets.chomp.to_i
+			system 'clear'
+			break if arrival_station_index == 999
+			show_accessible_trains
+			print trains.empty? ? "Доступных поездов нет. Введите '999', чтобы выйти: " : "\nВведите индекс поезда: "
 			arrival_train_index = gets.chomp.to_i
+			system 'clear'
 			break if arrival_train_index == 999
 			stations[arrival_station_index].trains.push(trains[arrival_train_index])
 			system 'clear'
-		  puts '/////////////////////////////////////////////////////////'
-			puts "Поезд № #{trains[arrival_train_index].number} прибыл на станцию #{stations[arrival_station_index].name}!"
-		  puts '/////////////////////////////////////////////////////////'
-			print "\nПродолжить принимать поезда ('yes' / 'no')? "
-			next_step = gets.chomp
-			break if next_step == 'no'
+			puts "Поезд № #{trains[arrival_train_index].number} прибыл на станцию #{stations[arrival_station_index].name}!\n\n"
+			sleep 2
 			system 'clear'
 		end
-		system 'clear'
 	end
 
 	def departure_train_from_station
 		loop do
 			system 'clear'
-			puts "Выберите из списка станцию, поезда на которой доступны для отправления:\n\n"
-			stations.each_with_index.select { |station, index| puts " - cтанция #{station.name}, индекс - #{index}." if station.trains.size >= 1 }
-			print "\nВведите индекс выбранной станции: "
-			departure_station_index = gets.chomp.to_i 
+			show_accessible_stations
+			print stations.empty? ? "Доступных станций нет. Введите '999', чтобы выйти: " : "\nВведите индекс станции: "
+			departure_station_index = gets.chomp.to_i
 			system 'clear'
-			puts "На станции #{stations[departure_station_index].name} доступны к отправлению следующие поезда:\n\n"
-			stations[departure_station_index].trains.each_with_index { |train, index| puts " - поезд № #{train.number}, тип #{train.type}, количество вагонов #{train.wagons.size}, индекс - #{index}."}
+			break if departure_station_index == 999
+			stations[departure_station_index].trains.each_with_index { |train, index| puts " - поезд № #{train.number}, тип #{train.type}, индекс - #{index}."}
 			print "\nВведите индекс выбранного поезда: "
 			departure_train_index = gets.chomp.to_i
 			system 'clear'
-			stations[departure_station_index].trains.delete(stations[departure_station_index].trains[departure_train_index])
-		  puts '/////////////////////////////////////////////////////////'			
-			puts "Выбранный поезд убыл со станции #{stations[departure_station_index].name}!"
-		  puts '/////////////////////////////////////////////////////////'
+			puts "Поезд убыл со станции." if stations[departure_station_index].trains.delete(stations[departure_station_index].trains[departure_train_index])
 			print "\nПродолжить отправлять поезда ('yes' / 'no')? "
 			next_step = gets.chomp
 			system 'clear'
 			break if next_step == 'no'
 			system 'clear'
-			result = stations.each.select { |station| station.trains.size >= 1 }
-			if result.size == 0
-			  puts '/////////////////////////////////////////////////////////'
-				puts "Нет доступных поездов к отправлению!"
-			  puts "/////////////////////////////////////////////////////////\n\n"
-  			sleep 3
-				system 'clear'
-				break
-			end
 		end
 	end
 
@@ -142,11 +119,9 @@ class Interface
 		result.each do |station|
 			puts "На станции #{station.name} находятся:"
 			station.trains.each { |train| puts" - поезд № #{train.number}, тип #{train.type}, количество вагонов #{train.wagons.size}."}
-			puts "\n"
 		end
 		sleep 5
 		system 'clear'
-
 	end
 
 	def train_type_list_on_the_stations
@@ -187,7 +162,7 @@ class Interface
 	def train_change_speed
 		system 'clear'
 		puts "Выберите из списка поезд, который будет разгоняться:\n\n"
-		trains.each_with_index { |train, index| puts " - поезд № #{train.number}, тип #{train.type}, количество вагонов #{train.wagons.size}, индекс - #{index}."}
+		show_accessible_trains
 		print "\nВведите индекс поезда: "
 		train_index = gets.chomp.to_i
 		system 'clear'
@@ -195,9 +170,7 @@ class Interface
 		train_speed = gets.chomp.to_i
 		trains[train_index].speed = train_speed
 		system 'clear'
-		puts '/////////////////////////////////////////////////////////'
 		puts "Поезд № #{trains[train_index].number} разогнался до скорости #{trains[train_index].speed} км/ч!"
-		puts '/////////////////////////////////////////////////////////'
 		sleep 3
 		system 'clear'
 	end
@@ -205,14 +178,12 @@ class Interface
 	def train_stop
 		system 'clear'
 		puts "Выберите из списка поезда, который будет тормозить:\n\n"
-		trains.each_with_index { |train, index| puts " - поезд № #{train.number}, скорость #{train.speed} км/ч, тип #{train.type}, количество вагонов #{train.wagons.size}, индекс - #{index}." if train.speed != 0 }
+		show_accessible_trains
 		print "\nВведите индекс поезда: "
 		train_index = gets.chomp.to_i
 		trains[train_index].speed = 0
 		system 'clear'
-		puts '/////////////////////////////////////////////////////////'		
 		puts "Поезд № #{trains[train_index].number} остановился!"
-		puts '/////////////////////////////////////////////////////////'
 		sleep 3
 		system 'clear'
 	end
@@ -220,12 +191,12 @@ class Interface
 	def assign_route_to_train
 		system 'clear'
 		puts "Выберите из списка поезд, которому необходимо назначить маршрут:\n\n"
-		trains.each_with_index { |train, index| puts " - поезд № #{train.number}, тип #{train.type}, количество вагонов #{train.wagons.size}, индекс - #{index}."}
+		show_accessible_trains
 		print "\nВведите индекс поезда: "
 		train_index = gets.chomp.to_i
 		system 'clear'
 		puts "Выберите маршрут из доступных:\n\n"
-		routes.each_with_index { |route, index | puts "Маршрут '#{route.first_station.name}-#{route.end_station.name}': индекс - #{index}."}
+		show_accessible_routes
 		print "\nВведите индекс маршрута, который хотите назначить поезду: "
 		@route_index = gets.chomp.to_i
 		trains[train_index].take_route(routes[@route_index])
@@ -237,7 +208,7 @@ class Interface
 		system 'clear'
 		loop do
 			puts "Выберите поезд, у которого необходимо провести операцию с вагонами:\n\n"
-			trains.each_with_index { |train, index| puts " - поезд № #{train.number}, тип #{train.type}, количество вагонов #{train.wagons.size}, индекс - #{index}."}
+			show_accessible_trains
 			print "\nВведите индекс поезда или введите 999, чтобы выйти: "
 			@carriage_train = gets.chomp.to_i
 			system 'clear'
@@ -262,7 +233,7 @@ class Interface
 	def drive_the_train_betwin_stations
 		system 'clear'
 		puts "Выберите поезд с назначенным маршрутом:\n\n"
-		trains.each_with_index { |train, index| puts " - поезд № #{train.number}, тип #{train.type}, количество вагонов #{train.wagons.size}, индекс - #{index}.\n" if train.current_point }
+		show_accessible_trains
 		print "\nВведите индекс поезда: "
 		@drive_train = gets.chomp.to_i
 		system 'clear'
@@ -281,7 +252,7 @@ class Interface
 	def trains_info
 		system 'clear'
 		puts "\nИнформация о всех поездах:"
-		trains.each_with_index { |train, index| puts " - поезд № #{train.number}, тип #{train.type}, количество вагонов #{train.wagons.size}, индекс - #{index}."}
+		show_accessible_trains
 		puts "\n"
 	end
 
@@ -295,16 +266,14 @@ class Interface
 			next_step = gets.chomp
 			system 'clear'
 			break if next_step == 'no'
-
 		end
-
 	end
 
 	def change_intermediate_stations_fron_route
 		system 'clear'
 		loop do
 			puts "Вы перешли в режим редактирования станций маршрута. Выберите маршрут из доступных:\n\n"
-			routes.each_with_index { |route, index | puts "Маршрут '#{route.first_station.name}-#{route.end_station.name}': индекс - #{index}."}
+			show_accessible_routes
 			print "\nВведите индекс маршрута, который хотите отредактировать или введите '999', чтобы выйти: "
 			@route_index = gets.chomp.to_i
 			system 'clear'
@@ -329,7 +298,7 @@ class Interface
 	def show_route_stations
 		system 'clear'
 		puts "Выберите маршут из доступных:\n\n"
-		routes.each_with_index { |route, index | puts "Маршрут '#{route.first_station.name}-#{route.end_station.name}': индекс - #{index}."}
+		show_accessible_routes
 		print "\nВведите индекс маршрута: "
 		route_index = gets.chomp.to_i
 		system 'clear'
@@ -340,6 +309,18 @@ class Interface
 	end
 
 	private
+	def show_accessible_stations
+		stations.each_with_index { |station, index| puts " - cтанция #{station.name}, индекс - #{index}."}
+	end
+
+	def show_accessible_trains
+		trains.each_with_index { |train, index| puts " - поезд № #{train.number}, тип #{train.type}, количество вагонов #{train.wagons.size}, индекс - #{index}."}
+	end
+
+	def show_accessible_routes
+		routes.each_with_index { |route, index| puts "Маршрут '#{route.first_station.name}-#{route.end_station.name}': индекс - #{index}."}
+	end
+
 	def hook_wagon
 		if trains[@carriage_train].type == :cargo && trains[@carriage_train].speed == 0
 			loop do
@@ -352,9 +333,7 @@ class Interface
 			trains[@carriage_train].wagons.push(cargo_wagon)
 			cargo_wagon.manufacturer = company
 			system 'clear'
-		  puts '/////////////////////////////////////////////////////////'
 			puts "Вагон от производителя '#{cargo_wagon.manufacturer}' успешно присоединен!"
-			puts '/////////////////////////////////////////////////////////'
 			sleep 3
 			system 'clear'
 		elsif trains[@carriage_train].type == :passenger && trains[@carriage_train].speed == 0
@@ -364,9 +343,7 @@ class Interface
 			trains[@carriage_train].wagons.push(passenger_wagon)
 			passenger_wagon.manufacturer = company
 			system 'clear'
-			puts '/////////////////////////////////////////////////////////'
 			puts "Вагон от производителя '#{passenger_wagon.manufacturer}' успешно присоединен!"
-			puts '/////////////////////////////////////////////////////////'
 			sleep 3
 			system 'clear'
 		end
@@ -374,9 +351,7 @@ class Interface
 
 	def unhook_wagon
 		trains[@carriage_train].wagons.delete(trains[@carriage_train].wagons[0])
-		puts '/////////////////////////////////////////////////////////'
 		puts "Вагон успешно отсоединен!"
-		puts '/////////////////////////////////////////////////////////'
 		sleep 3
 		system 'clear'
 	end
@@ -397,16 +372,14 @@ class Interface
 			puts "\nПоезд № #{trains[@drive_train].number} прибыл на станцию #{trains[@drive_train].current_point.name}.\n\n"
 			puts "Следующая станция #{trains[@drive_train].previous_station.name}.\n\n" if trains[@drive_train].current_point.name != routes[@drive_train].list.first.name && trains[@drive_train].current_point.name != routes[@drive_train].list.last.name 
 		else
-			puts '/////////////////////////////////////////////////////////'
 			puts "\nПоезд прибыл на конечную станцию и дальше не идет!\n\n"
-			puts '/////////////////////////////////////////////////////////'
 		end
 	end
 
 	def add_new_station_on_the_route
 		system 'clear'
 		puts "Выберите из списка станцию, которую необходимо добавить в маршрут:\n\n"
-		stations.each_with_index { |station, index| puts " - cтанция #{station.name}, индекс - #{index}."}
+		show_accessible_stations
 		print "\nВведите индекс станции: "
 		station_index = gets.chomp.to_i 
 		routes[@route_index].add_station_route(stations[station_index])
@@ -434,27 +407,16 @@ class Interface
 
 	def create_route
 		puts "Чтобы создать маршрут выберите доступные станции:\n\n"
-		stations.each_with_index { |station, index| puts " - cтанция #{station.name}, индекс - #{index}." }
+		show_accessible_stations
 		print "\nВведите индекс станции для первой точки маршрута: "
 		first_index = gets.chomp.to_i
 		print "Введите индекс станции для второй точки маршрута: "
 		last_index = gets.chomp.to_i
 		system 'clear'
 		routes.push(Route.new(stations[first_index], stations[last_index]))
-		puts '/////////////////////////////////////////////////////////'
 		puts "Маршрут #{stations[first_index].name}-#{stations[last_index].name} успешно создан!"
-		puts '/////////////////////////////////////////////////////////'
 		rescue Exception => e		
 		puts "#{e.message}\n\n"
-	end
-
-	def create_station
-		print "Введите название станции: "
-		station = gets.chomp
-		station = Station.new(station)
-		stations << station
-		system 'clear'
-		puts "Станция '#{station.name}' создана!"
 	end
 
 	def create_passenger_train
@@ -464,9 +426,7 @@ class Interface
 		trains << train
 		train.manufacturer = company
 		system 'clear'
-		puts '/////////////////////////////////////////////////////////'
 		puts "Новый поезд № #{train.number} успешно создан производителем '#{train.manufacturer}'!" 
-		puts '/////////////////////////////////////////////////////////'
 		sleep 3
 		system 'clear'
 	end
@@ -480,9 +440,7 @@ class Interface
 		trains << train
 		train.manufacturer = company
 		system 'clear'
-		puts '/////////////////////////////////////////////////////////'
 		puts "Новый поезд № #{train.number} успешно создан производителем '#{train.manufacturer}'!"
-		puts '/////////////////////////////////////////////////////////'
 		sleep 3
 		system 'clear'
 	end

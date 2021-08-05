@@ -21,9 +21,9 @@ class Train
 		@type = type.to_sym
 		@wagons = []
 		@speed = 0
+		validate!
 		self.class.save_trains(self)
 		count_copies
-		validate!
 	end
 
 	def valid?
@@ -52,12 +52,14 @@ class Train
 		self.previous_station = @route.list[point - 1]
 	end
 
-	protected
 	def validate!
-		raise 'Неверный формат номера поезда!' if number !~ NUMBER_FORMAT
-		raise if type != :passenger && type != :cargo
+		errors = []
+		errors << 'Неверный формат номера поезда.' if number !~ NUMBER_FORMAT
+		errors << 'Неверный тип поезда.' if type != :passenger && type != :cargo
+		raise errors.join(' ') unless errors.empty?
 	end
 
+	protected
 	def self.save_trains(train)
 		@@trains << train
 	end

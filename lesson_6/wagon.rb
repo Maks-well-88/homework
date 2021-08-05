@@ -17,8 +17,9 @@ class Wagon
 		false
 	end
 
-	protected
 	def validate!
-		raise 'Неправильный тип вагона!' if type != :cargo && type != :passenger
+		errors = []
+		errors << 'Неправильный тип вагона.' if type != :cargo && type != :passenger		
+		raise errors.join(' ') unless errors.empty?
 	end
 end
