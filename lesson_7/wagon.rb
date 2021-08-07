@@ -3,7 +3,8 @@ require_relative 'module_manufacturer.rb'
 class Wagon
 	include Manufacturer
 
-	attr_reader :type, :takes, :volume
+	attr_reader :type
+	attr_accessor :takes, :volume
 
 	def initialize(type, volume)
 		@type = type.to_sym
@@ -15,14 +16,6 @@ class Wagon
 	def take_volume(take=1)
 		@takes += take		
 		@volume -= take if @volume >= 0
-	end
-
-	def show_takes_volume
-		@takes
-	end
-
-	def show_free_volume
-		@volume
 	end
 
 	def valid?
