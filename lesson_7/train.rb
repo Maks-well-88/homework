@@ -27,7 +27,7 @@ class Train
 	end
 
 	def add_wagons_to_block(block)
-		self.wagons.each_with_index { |wagon, index| block.call(wagon, index)}
+		wagons.each_with_index { |wagon, index| block.call(wagon, index)}
 	end
 
 	def valid?

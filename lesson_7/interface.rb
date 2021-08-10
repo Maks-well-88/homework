@@ -227,18 +227,17 @@ class Interface
 		show_accessible_trains
 		print "Выберите поезд с вагонами: "
 		train_choise = gets.chomp.to_i
-		trains[train_choise].wagons.each_with_index { |wagon, index| puts "Вагон с индексом #{index}, #{wagon.type}, занято #{wagon.takes}, свободно #{wagon.volume}."}
+		trains[train_choise].wagons.each_with_index { |wagon, index| puts "Вагон с индексом #{index}, #{wagon.type}, занято #{wagon.taken_place}, свободно #{wagon.free_place}."}
 		print "Выберите индекс вагона в поезде: "
 		wagon_choise = gets.chomp.to_i
-		if trains[train_choise].wagons[wagon_choise].type == :passenger
-			trains[train_choise].wagons[wagon_choise].take_volume
-		else
-			print "Укажите объем груза: "
-			cargo = gets.chomp.to_i
-			trains[train_choise].wagons[wagon_choise].take_volume(cargo)
-		end
+		print "Укажите сколько занять места в вагоне: "
+		amount = gets.chomp.to_i
+		trains[train_choise].wagons[wagon_choise].take_place(amount)
 		system 'clear'
-		puts 'Место успешно заполнено!'
+		puts "Место успешно заполнено!"
+	rescue => e
+		system 'clear'
+		puts "#{e.message}"
 	end
 
 	def drive_the_train_betwin_stations
@@ -274,11 +273,7 @@ class Interface
 		choise = gets.chomp.to_i
 		system 'clear'
 		block = lambda do |wagon, index|
-			if wagon.type == :cargo
-				puts "Номер вагона #{index + 1}, тип: #{wagon.type}, занято: #{wagon.takes} куб. м, свободно: #{wagon.volume} куб. м."
-			else
-				puts "Номер вагона #{index + 1}, тип: #{wagon.type}, занято мест: #{wagon.takes}, свободно: #{wagon.volume} мест."
-			end				
+		puts "Номер вагона #{index + 1}, тип: #{wagon.type}, занято #{wagon.class::UNIT}: #{wagon.taken_place}, свободно #{wagon.class::UNIT}: #{wagon.free_place}."			
 		end	
 		trains[choise].add_wagons_to_block(block) 
 	end
@@ -358,7 +353,7 @@ class Interface
 			trains[@carriage_train].wagons.push(cargo_wagon)
 			cargo_wagon.manufacturer = company
 			system 'clear'
-			puts "Вагон от производителя '#{cargo_wagon.manufacturer}', вместимостью #{cargo_wagon.volume} куб. м успешно присоединен!"
+			puts "Вагон от производителя '#{cargo_wagon.manufacturer}', вместимостью #{cargo_wagon.place} куб. м успешно присоединен!"
 			sleep 3
 			system 'clear'
 		elsif trains[@carriage_train].type == :passenger && trains[@carriage_train].speed == 0
@@ -370,7 +365,7 @@ class Interface
 			trains[@carriage_train].wagons.push(passenger_wagon)
 			passenger_wagon.manufacturer = company
 			system 'clear'
-			puts "Вагон от производителя '#{passenger_wagon.manufacturer}', вместимостью #{passenger_wagon.volume} мест успешно присоединен!"
+			puts "Вагон от производителя '#{passenger_wagon.manufacturer}', вместимостью #{passenger_wagon.place} мест успешно присоединен!"
 			sleep 3
 			system 'clear'
 		end
