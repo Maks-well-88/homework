@@ -7,7 +7,7 @@ module ManageStations
     print 'Введите название станции: '
     station = Station.new(gets.chomp)
     stations << station
-    puts "Станция '#{station.name}' успешно создана!"
+    puts "Станция '#{station.name}' создана!"
   rescue StandardError => e
     puts "#{e.message}\n"
   end
@@ -51,7 +51,7 @@ module ManageStations
     show_accessible_stations
     print 'Выберите станцию: '
     choise = gets.chomp.to_i
-    block = ->(train) { puts "Поезд № #{train.number}, тип: #{train.type}, вагонов: #{train.wagons.size}." }
+    block = ->(train) { puts "Поезд № #{train.number}, #{train.type}, вагонов: #{train.wagons.size}." }
     stations[choise].add_stations_to_block(block)
   end
 

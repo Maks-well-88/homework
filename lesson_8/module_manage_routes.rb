@@ -28,9 +28,7 @@ module ManageRoutes
     show_accessible_routes
     print 'Выберите маршрут: '
     route = gets.chomp.to_i
-    routes[route].list.each_with_index do |station, index|
-      puts "- cтанция #{station.name}, индекс: #{index}."
-    end
+    routes[route].list.each_with_index { |station, index| puts "#{station.name} - #{index}." }
     print 'Выберите станцию для удаления: '
     routes[route].delete_station(routes[route].list[gets.chomp.to_i])
     puts 'Станция успешно удалена из маршрута!'
