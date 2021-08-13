@@ -1,24 +1,32 @@
 # frozen_string_literal: true
 
 module ManageTrains
-  attr_accessor :train
-
   def create_train
     puts 'Создать пассажирский - (0), создать грузовой - (1).'
     print 'Введите: '
     option = gets.chomp.to_i
+    types = { 0 => :create_passenger, 1 => :create_cargo }
+    send(types[option])
+  end
+
+  def create_passenger
     print 'Введите номер: '
-    number = gets.chomp
+    train = PassengerTrain.new(gets.chomp)
+    trains << train
     print 'Укажите производителя: '
     company = gets.chomp
-    case option
-    when 0
-      train = PassengerTrain.new(number)
-      trains << train
-    when 1
-      train = CargoTrain.new(number)
-      trains << train
-    end
+    train.manufacturer = company
+    puts "Поезд № #{train.number} создан производителем '#{train.manufacturer}'!"
+  rescue StandardError => e
+    puts e.message.to_s
+  end
+
+  def create_cargo
+    print 'Введите номер: '
+    train = CargoTrain.new(gets.chomp)
+    trains << train
+    print 'Укажите производителя: '
+    company = gets.chomp
     train.manufacturer = company
     puts "Поезд № #{train.number} создан производителем '#{train.manufacturer}'!"
   rescue StandardError => e
