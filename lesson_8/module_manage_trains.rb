@@ -1,14 +1,6 @@
 # frozen_string_literal: true
 
 module ManageTrains
-  def create_train
-    puts 'Создать пассажирский - (0), создать грузовой - (1).'
-    print 'Введите: '
-    option = gets.chomp.to_i
-    types = { 0 => :create_passenger, 1 => :create_cargo }
-    send(types[option])
-  end
-
   def create_passenger
     print 'Введите номер: '
     train = PassengerTrain.new(gets.chomp)
@@ -90,10 +82,5 @@ module ManageTrains
     else
       puts 'Поезд на конечной, дальше не идет!'
     end
-  end
-
-  def trains_info
-    puts 'Информация о всех поездах:'
-    show_accessible_trains
   end
 end

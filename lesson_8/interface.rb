@@ -44,7 +44,7 @@ class Menu
       { action_title: 'Перемещать поезд вперед', index: 9, action: :move_forward },
       { action_title: 'Перемещать поезд назад', index: 10, action: :move_backward },
       { action_title: 'Остановить поезд', index: 11, action: :train_stop },
-      { action_title: 'Показать информацию о поездах', index: 12, action: :trains_info },
+      { action_title: 'Показать информацию о поездах', index: 12, action: :show_accessible_trains },
       { break_block: "\n" },
       { action_block: 'УПРАВЛЕНИЕ ВАГОНАМИ' },
       { action_title: 'Присоединить вагон', index: 13, action: :hook_wagon },
@@ -84,6 +84,14 @@ class Menu
   end
 
   private
+
+  def create_train
+    puts 'Создать пассажирский - (0), создать грузовой - (1).'
+    print 'Введите: '
+    option = gets.chomp.to_i
+    types = { 0 => :create_passenger, 1 => :create_cargo }
+    send(types[option])
+  end
 
   def show_accessible_stations
     stations.each_with_index do |station, index|
