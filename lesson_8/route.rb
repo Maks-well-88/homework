@@ -1,41 +1,56 @@
+# frozen_string_literal: true
+
 require_relative 'instance_counter'
 
 class Route
-	include InstanceCounter
+  include InstanceCounter
 
-	attr_accessor :list, :first_station, :end_station
-	
-	def initialize(first_station, end_station)
-		@first_station = first_station
-		@end_station = end_station
-		@list = [first_station, end_station]
-		validate!		
-		count_copies
-	end
+  attr_accessor :list, :first_station, :end_station
 
-	def valid?
-		validate!
-		true
-	rescue
-		false
-	end
+  def self.save_routes
+    @routes ||= []
+    @routes << self
+  end
 
-	def add_station_route(station)
-		list[-1] = station
-		list << end_station
-	end
+  def self.all
+    @routes
+  end
 
-	def delete_station_route(station)
-		list.delete(station) if list.first.name != station.name && list.last.name != station.name
-	end
+  def initialize(first_station, end_station)
+    @first_station = first_station
+    @end_station = end_station
+    @list = [first_station, end_station]
+    validate!
+    self.class.save_routes
+    count_copies
+  end
 
-	def route_list
-		list.each {|i| puts i }
-	end
+  def valid?
+    validate!
+    true
+  rescue StandardError
+    false
+  end
 
-	def validate!
-		errors = []
-		errors << 'Не корректно построен маршрут! Попробуйте еще раз.' if first_station.nil? || end_station.nil?
-		raise errors.join(' ') unless errors.empty?
-	end
+  def add_station(station)
+    list[-1] = station
+    list << end_station
+  end
+
+  def delete_station(station)
+    raise 'Отказано в удалении!' if station == list[0] || station == list[-1]
+
+    list.delete(station) if list[0] != station && list[-1] != station
+  end
+
+  def show_list
+    list.each { |i| puts i.name }
+  end
+
+  def validate!
+    errors = []
+    errors << 'Отсутствует начальная точка! Попробуйте еще раз.' if first_station.nil?
+    errors << 'Отсутствует конечная точка! Попробуйте еще раз.' if end_station.nil?
+    raise errors.join(' ') unless errors.empty?
+  end
 end

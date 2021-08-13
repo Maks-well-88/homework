@@ -1,12 +1,11 @@
-require_relative 'train'
-require_relative 'module_manufacturer'
+# frozen_string_literal: true
 
 class CargoTrain < Train
-	include Manufacturer
+  include Manufacturer
 
-	TRAIN_TYPE = :cargo
+  TYPE = :cargo
 
-	def initialize(number)
-		super(number, TRAIN_TYPE)
-	end
+  def initialize(number)
+    super(TYPE, number)
+  end
 end
