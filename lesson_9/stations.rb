@@ -14,6 +14,8 @@ class Station
 
   attr_accessor :trains
   attr_reader :name
+  validate :name, :presence
+  validate :name, :format, STATION_FORMAT
 
   def self.save_stations
     @stations ||= []
@@ -34,20 +36,5 @@ class Station
 
   def add_stations_to_block(block)
     trains.each { |train| block.call(train) }
-  end
-
-  def valid?
-    validate!
-    true
-  rescue StandardError
-    false
-  end
-
-  def validate!
-    errors = []
-    errors << 'Отсутствует название станции.' if name.empty?
-    errors << 'Короткое название станции.' if name.length < 5
-    errors << 'Название станции не соответствует формату.' if name !~ STATION_FORMAT
-    raise errors.join(' ') unless errors.empty?
   end
 end

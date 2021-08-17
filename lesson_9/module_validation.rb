@@ -38,15 +38,15 @@ module Validation
     end
 
     def presence(name, _)
-      raise('Атрибут nil или пустой') if get_name(name).nil? || get_name(name).eql?('')
+      raise('Значение атрибута nil или пустое!') if get_name(name).nil? || get_name(name).eql?('')
     end
 
     def format(name, param)
-      get_name(name).match?(param) ? true : raise('Атрибут не соответствует формату')
+      get_name(name).match?(param) ? true : raise('Значение атрибута не соответствует формату!')
     end
 
     def type(name, param)
-      get_name(name).is_a?(param) ? true : raise('Атрибут не соответствует типу')
+      get_name(name).is_a?(param) ? true : raise('Значение атрибута не соответствует типу!')
     end
   end
 end
