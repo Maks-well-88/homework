@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require_relative 'module_accessors'
-require_relative 'module_validation'
+require_relative '../modules/accessors.rb'
+require_relative '../modules/validation.rb'
 
 class History
   include Accessors

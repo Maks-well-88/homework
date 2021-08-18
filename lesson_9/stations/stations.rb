@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require_relative 'instance_counter'
-require_relative 'module_manage_stations'
-require_relative 'module_accessors'
-require_relative 'module_validation'
+require_relative '../modules/instance_counter.rb'
+require_relative '../modules/manage_stations.rb'
+require_relative '../modules/accessors.rb'
+require_relative '../modules/validation.rb'
 
 class Station
   include InstanceCounter
